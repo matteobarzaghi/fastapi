@@ -1,6 +1,6 @@
 from random import randrange
 from typing import Optional
-from fastapi import Body, FastAPI
+from fastapi import Body, FastAPI, Response, status, HTTPException
 from pydantic import BaseModel 
 
 app = FastAPI()
@@ -30,7 +30,7 @@ def getHelloWorld():
     return {"message" : "Welcome to this FAST API tutorial"}
 
 # first post call, payload define a dict and import Body from fastapi
-@app.post("/posts")
+@app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_posts(post: Post):
     post_dict = post.dict()
     post_dict['id'] = randrange(0,100000)
@@ -45,7 +45,12 @@ def get_posts():
 
 @app.get("/posts/{id}")
 # inside the function parameter I state that id must be an int
-def get_post(id : int):
+def get_post(id : int, response: Response):
     # instead of manually convert it id to int
     post = find_post_by_id(id)
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"post with id {id} was not found")
+        #response.status_code = status.HTTP_404_NOT_FOUND
+        #return {'message' : f"id: {id} was not found!"}
     return {"data" : post}
