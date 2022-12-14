@@ -2,6 +2,9 @@ from random import randrange
 from typing import Optional
 from fastapi import Body, FastAPI, Response, status, HTTPException
 from pydantic import BaseModel
+import psycopg2
+from psycopg2.extras import RealDictCursor
+import time
 
 app = FastAPI()
 my_posts = [{"title": "title of post 1", "content": "content of post 1", "id": 1}, {
@@ -16,7 +19,25 @@ class Post(BaseModel):
     # optional property can be set with a default value
     published: bool = False
     # or with the Optional object
-    rating: Optional[int] = None
+    #rating: Optional[int] = None
+
+
+while True:
+    try:
+        conn = psycopg2.connect(
+            host='localhost',
+            database='fastapi',
+            user='postgres',
+            password='hkn5vru6',
+            cursor_factory=RealDictCursor)
+        # this is what we gonna use for sql querys
+        cursor = conn.cursor()
+        print("**** DATABASE CONNECTION ESTABLISHED ****")
+        break
+    except Exception as error:
+        print("Connecting to database failed")
+        print("Error", error)
+        time.sleep(2)
 
 
 def find_post_by_id(id):
