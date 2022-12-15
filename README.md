@@ -1,0 +1,3 @@
+# fastapi
+
+This Python script uses the FastAPI and Pydantic libraries to create a web API that allows users to create, read, update, and delete (CRUD) posts. The posts are stored in a list in the script and each post is a dictionary containing a title, content, and id. The API uses decorators to define the routes and the behavior of each route when it receives a request. The script also uses the psycopg2 library to connect to a PostgreSQL database and store the posts in the database instead of the list. The API has error handling for when a post with a specified id does not exist. The API returns responses in JSON format.
