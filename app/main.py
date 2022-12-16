@@ -92,8 +92,8 @@ def delete_post(id: int):
 @app.put("/posts/{id}", status_code=status.HTTP_202_ACCEPTED)
 def update_post(id: int, post: Post):
 
-    cursor.execute(""" UPDATE posts SET title =%s, content=%s RETURNING * """,
-                   (post.title, post.content))
+    cursor.execute(""" UPDATE posts SET title =%s, content=%s WHERE id = %s RETURNING * """,
+                   (post.title, post.content, str(id),))
     updated_post = cursor.fetchone()
     # to save data in the db we have to reference the connection and do a commit
     conn.commit()
