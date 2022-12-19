@@ -19,8 +19,10 @@ class Post(BaseModel):
     # or with the Optional object
     #rating: Optional[int] = None
 
-# DATABASE CONNECTION
+with open('C:Users/matte/VisualStudio/source/repos/python/fastapi/app/password.txt', 'r') as f:
+    password = f.read().strip()
 
+# DATABASE CONNECTION
 
 while True:
     try:
@@ -28,7 +30,7 @@ while True:
             host='localhost',
             database='fastapi',
             user='postgres',
-            password='hkn5vru6',
+            password=password,
             cursor_factory=RealDictCursor)
         # this is what we gonna use for sql querys
         cursor = conn.cursor()
