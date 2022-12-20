@@ -1,0 +1,1 @@
+postgresql://postgres:hkn5vru6@localhost/fastapi

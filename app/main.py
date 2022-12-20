@@ -1,16 +1,27 @@
 from random import randrange
 from typing import Optional
-from fastapi import Body, FastAPI, Response, status, HTTPException
+from fastapi import Body, FastAPI, Response, status, HTTPException, Depends
 from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
+from . import models
+from .database import engine, SessionLocal
+from sqlalchemy.orm import Session
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 # validation schema for post
-
-
 class Post(BaseModel):
     title: str
     content: str
@@ -19,28 +30,9 @@ class Post(BaseModel):
     # or with the Optional object
     #rating: Optional[int] = None
 
-with open('C:Users/matte/VisualStudio/source/repos/python/fastapi/app/password.txt', 'r') as f:
-    password = f.read().strip()
-
-# DATABASE CONNECTION
-
-while True:
-    try:
-        conn = psycopg2.connect(
-            host='localhost',
-            database='fastapi',
-            user='postgres',
-            password=password,
-            cursor_factory=RealDictCursor)
-        # this is what we gonna use for sql querys
-        cursor = conn.cursor()
-        print("**** DATABASE CONNECTION ESTABLISHED ****")
-        break
-    except Exception as error:
-        print("Connecting to database failed")
-        print("Error", error)
-        time.sleep(2)
-
+@app.get("/sqlalchemy")
+def test_posts(db: Session = Depends(get_db)):
+    return {"status" : "success"}
 
 # decorator @app + url
 @app.get("/")
